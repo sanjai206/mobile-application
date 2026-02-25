@@ -1,0 +1,66 @@
+package com.example.validationapp
+
+import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var etPan: EditText
+    private lateinit var etPincode: EditText
+    private lateinit var btnValidate: Button
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        etPan = findViewById(R.id.etPan)
+        etPincode = findViewById(R.id.etPincode)
+        btnValidate = findViewById(R.id.btnValidate)
+
+        btnValidate.setOnClickListener {
+            validateFields()
+        }
+    }
+
+    private fun validateFields() {
+
+        val pan = etPan.text.toString().trim()
+        val pincode = etPincode.text.toString().trim()
+
+        // i) Check empty fields
+        if (pan.isEmpty()) {
+            etPan.error = "PAN Card Number cannot be empty"
+            etPan.requestFocus()
+            return
+        }
+
+        if (pincode.isEmpty()) {
+            etPincode.error = "Pincode cannot be empty"
+            etPincode.requestFocus()
+            return
+        }
+
+        // ii) PAN validation (10 alphanumeric characters)
+        val panRegex = Regex("^[A-Z0-9]{10}$")
+
+        if (!panRegex.matches(pan)) {
+            etPan.error = "PAN must be exactly 10 alphanumeric characters"
+            etPan.requestFocus()
+            return
+        }
+
+        // iii) Pincode validation (6-digit numeric)
+        val pinRegex = Regex("^[0-9]{6}$")
+
+        if (!pinRegex.matches(pincode)) {
+            etPincode.error = "Pincode must be exactly 6 digits"
+            etPincode.requestFocus()
+            return
+        }
+
+        Toast.makeText(this, "Validation Successful!", Toast.LENGTH_LONG).show()
+    }
+}
